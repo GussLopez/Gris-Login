@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, HasMany, BelongsTo, ForeignKey } from 'sequelize-typescript'
+import { Table, Column, Model, DataType, HasMany, BelongsTo, ForeignKey, Default } from 'sequelize-typescript'
 
 @Table({
     tableName: 'users'
@@ -26,14 +26,15 @@ class User extends Model {
     declare password: string
 
     @Column({
-        type: DataType.STRING
+        type: DataType.STRING(6)
     })
    declare token: string
 
+   @Default(false)
     @Column({
-        type: DataType.STRING
+        type: DataType.BOOLEAN
     })
-    declare confirmed: string
+    declare confirmed: Boolean
 }
 
 export default User

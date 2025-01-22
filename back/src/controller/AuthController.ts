@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import User from "../models/User"
 import { checkPassword, hashPassword } from "../utils/auth";
 import { generateUserJWT } from "../utils/jwt";
+import { generateToken } from "../utils/token";
+import { AuthEmail } from "../emails/AuthEmail";
 
 export class AuthController {
     static createAccount = async (req: Request, res: Response) => {
@@ -19,14 +21,37 @@ export class AuthController {
         try {
             const user = new User(req.body)
             user.password = await hashPassword(password)
+            user.token = generateToken()
             await user.save()
+
+            await AuthEmail.sendConfirmationEmail({
+                name: user.name,
+                email: user.email,
+                token: user.token
+            })
 
             res.status(201).json('Cuenta creada correctamente')
         } catch (error) {
             res.status(500).json({error: 'Hubo un error'})
         }
     }
-    // TODO: Verificación de usuario
+    
+    static confirmAccount = async (req: Request, res: Response) => {
+        const { token } = req.body
+
+        const user = await User.findOne({where: { token }})
+        if (!user) {
+            const error = new Error('Token no válido')
+            res.status(401).json({error: error.message})
+            return
+        }
+        user.confirmed = true
+        user.token = ""
+        await user.save()
+
+        res.json("Cuante confirmada correctamente")
+    }
+
     static login = async (req: Request, res: Response) => {
         const { email, password } = req.body
 

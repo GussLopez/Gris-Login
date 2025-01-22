@@ -3,9 +3,12 @@ import { body } from "express-validator";
 import { handleInputErrors } from "../middleware/validation";
 import { AuthController } from "../controller/AuthController";
 import { authenticate } from "../middleware/auth";
+import { limiter } from "../config/limiter";
 
 
 const router = Router();
+
+router.use(limiter)
 
 router.post('/create-account',
     body('name')
@@ -18,6 +21,15 @@ router.post('/create-account',
         .isLength({min: 8}).withMessage('La contraseña debe ser mínimo de 8 caracteres'),
     handleInputErrors,
     AuthController.createAccount
+)
+
+router.post('/confirm-account', 
+    body('token')
+        .notEmpty()
+        .isLength({min: 6, max: 6})
+        .withMessage('Token no válido'),
+    handleInputErrors,
+    AuthController.confirmAccount
 )
 
 router.post('/login', 
