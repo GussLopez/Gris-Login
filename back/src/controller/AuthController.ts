@@ -63,11 +63,11 @@ export class AuthController {
             return
         }
     
-    /*   if (!user.confirmed) {
+      if (!user.confirmed) {
         const error = new Error('El usuario no esta confirmado')
         res.status(403).json({error: error.message})
         return
-    } */
+    }
     const isPasswordCorrect = await checkPassword(password, user.password)
 
     if (!isPasswordCorrect) {
@@ -76,7 +76,7 @@ export class AuthController {
         return
     }
 
-    const token = generateUserJWT(user.id)
+    const token = generateUserJWT(user.id, user.role)
 
     res.json(token)
     }

@@ -13,3 +13,9 @@ export type RegisterForm = Pick<User, 'name' | 'phone' | 'email'> & {
     password: string,
     password_confirmation: string
 }
+
+export type CustomJwtPayload = {
+    role: string;
+    exp?: number;
+    iat?: number;
+  }

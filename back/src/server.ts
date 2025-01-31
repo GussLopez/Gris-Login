@@ -5,6 +5,7 @@ import cors from 'cors'
 import { db } from './config/db'
 import authRouter from './routes/authRouter'
 import { corsConfig } from './config/cors'
+import { initializeAdmin } from './utils/initializeAdmin'
 
 
 async function connectDB() {
@@ -12,6 +13,7 @@ async function connectDB() {
         await db.authenticate()
         db.sync()
         console.log( colors.blue.bold('Conexión exitosa a la BD'));
+        await initializeAdmin()
     } catch (error) {
         // console.log(error);
         console.log(colors.red.bold('Falló la conexión a la BD'));

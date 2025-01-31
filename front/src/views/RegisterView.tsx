@@ -6,8 +6,10 @@ import api from "../config/axios"
 import { isAxiosError } from "axios"
 import ErrorMessage from "../components/ErrorMessage"
 import { Eye, EyeSlash } from "@phosphor-icons/react"
+import { useNavigate } from "react-router-dom"
 
 export default function RegisterView() {
+    const navigate = useNavigate()
     const initialValues : RegisterForm = {
         name: '',
         phone: '',
@@ -25,6 +27,9 @@ export default function RegisterView() {
         try {
             const {data} = await api.post(`/api/auth/create-account`, formData)
             toast.success(data)
+            setTimeout(() => {
+                navigate('/auth/confirm-account')
+            }, 1000);
         } catch (error) {
             if (isAxiosError(error) && error.response) {
                 toast.error(error.response.data.error)

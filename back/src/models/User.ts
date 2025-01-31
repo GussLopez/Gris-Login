@@ -25,6 +25,12 @@ class User extends Model {
     })
     declare password: string
 
+    @Default('user')
+    @Column({
+        type: DataType.STRING(10)
+    })
+    declare role: string
+
     @Column({
         type: DataType.STRING(6)
     })
@@ -35,6 +41,11 @@ class User extends Model {
         type: DataType.BOOLEAN
     })
     declare confirmed: Boolean
+
+    @Column({
+        type: DataType.STRING(100)
+    })
+    declare secret: String
 }
 
 export default User
